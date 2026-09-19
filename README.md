@@ -43,9 +43,9 @@ It installs a shared prompt definition, enables it for interactive Bash shells, 
 ## Install
 
 ### Download and change folder
-
+```
 git clone https://github.com/xgshost/bash-prompt-installer.git && cd bash-prompt-installer && sudo bash install-bash-prompt.sh
-
+```
 ### Run the installer
 
 ```bash
