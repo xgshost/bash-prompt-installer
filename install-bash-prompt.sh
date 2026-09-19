@@ -180,4 +180,4 @@ if has_complete_block "$BASHRC_FILE" "$SYSTEM_BEGIN" "$SYSTEM_END"; then
 
     rm -f "$current_system_loader"
 else
-    printf 'System loader is missing:
+    printf 'System loader is missing:'
