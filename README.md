@@ -40,6 +40,17 @@ It installs a shared prompt definition, enables it for interactive Bash shells, 
 
 ## Install
 
+
+### One-line install
+
+> **Warning:** This command downloads and runs the latest version of the script with administrator privileges. Only use it if you trust this repository and understand that you are executing remote code as root.
+
+```bash
+curl -fsSL [https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh](https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh) | sudo bash
+```
+
+### Manual Install
+
 ### 1. Download the script
 
 ```bash
