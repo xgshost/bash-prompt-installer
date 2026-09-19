@@ -166,7 +166,7 @@ fi
 # ── Install/update the system-wide loader ───────────────────────────────────
 if has_complete_block "$BASHRC_FILE" "$SYSTEM_BEGIN" "$SYSTEM_END"; then
     current_system_loader="$(mktemp)"
-    sed -n "/^$(printf '%s' "$SYSTEM_BEGIN" | sed 's/[][\/.^$*]/\\&/g')\$/,/^$(printf '%s' "$SYSTEM_END" | sed 's/[][\/.^$*]/\\&/g')\$/p" \
+    sed -n "/^$(printf '%s' "$SYSTEM_BEGIN" | sed 's/[][\\/.^$*]/\\\\&/g')\$/,/^$(printf '%s' "$SYSTEM_END" | sed 's/[][\\/.^$*]/\\\\&/g')\$/p" \
         "$BASHRC_FILE" > "$current_system_loader"
 
     if cmp -s "$TMP_SYSTEM_LOADER" "$current_system_loader"; then
@@ -180,4 +180,71 @@ if has_complete_block "$BASHRC_FILE" "$SYSTEM_BEGIN" "$SYSTEM_END"; then
 
     rm -f "$current_system_loader"
 else
-    printf 'System loader is missing:'
+    printf 'System loader is missing: will add it to %s\n' "$BASHRC_FILE"
+    backup_file "$BASHRC_FILE" "bash.bashrc"
+    printf '\n' >> "$BASHRC_FILE"
+    cat "$TMP_SYSTEM_LOADER" >> "$BASHRC_FILE"
+    printf 'Installed system loader in %s\n' "$BASHRC_FILE"
+fi
+
+# ── Install/update per-user loader blocks ───────────────────────────────────
+install_user_loader() {
+    local user_home="$1"
+    local user_name="$2"
+    local user_bashrc="$user_home/.bashrc"
+    local current_user_loader
+
+    [[ -d "$user_home" ]] || return 0
+
+    if [[ ! -e "$user_bashrc" ]]; then
+        touch "$user_bashrc"
+        chown "$user_name:$user_name" "$user_bashrc"
+        chmod 0644 "$user_bashrc"
+    fi
+
+    if has_complete_block "$user_bashrc" "$USER_BEGIN" "$USER_END"; then
+        current_user_loader="$(mktemp)"
+        sed -n "/^$(printf '%s' "$USER_BEGIN" | sed 's/[][\\/.^$*]/\\\\&/g')\$/,/^$(printf '%s' "$USER_END" | sed 's/[][\\/.^$*]/\\\\&/g')\$/p" \
+            "$user_bashrc" > "$current_user_loader"
+
+        if cmp -s "$TMP_USER_LOADER" "$current_user_loader"; then
+            printf 'User loader is already current: %s\n' "$user_bashrc"
+        else
+            printf 'User loader differs: will update %s\n' "$user_bashrc"
+            backup_file "$user_bashrc" "${user_name}.bashrc"
+            replace_managed_block "$user_bashrc" "$USER_BEGIN" "$USER_END" "$TMP_USER_LOADER"
+            chown "$user_name:$user_name" "$user_bashrc"
+            chmod 0644 "$user_bashrc"
+            printf 'Updated user loader in %s\n' "$user_bashrc"
+        fi
+
+        rm -f "$current_user_loader"
+    else
+        printf 'User loader is missing: will add it to %s\n' "$user_bashrc"
+        backup_file "$user_bashrc" "${user_name}.bashrc"
+        printf '\n' >> "$user_bashrc"
+        cat "$TMP_USER_LOADER" >> "$user_bashrc"
+        chown "$user_name:$user_name" "$user_bashrc"
+        chmod 0644 "$user_bashrc"
+        printf 'Installed user loader in %s\n' "$user_bashrc"
+    fi
+}
+
+# Always configure root.
+install_user_loader "/root" "root"
+
+# Also configure the non-root user who invoked sudo, when available.
+if [[ -n "${SUDO_USER:-}" && "$SUDO_USER" != "root" ]]; then
+    invoking_user_home="$(getent passwd "$SUDO_USER" | cut -d: -f6 || true)"
+
+    if [[ -n "$invoking_user_home" && -d "$invoking_user_home" ]]; then
+        install_user_loader "$invoking_user_home" "$SUDO_USER"
+    else
+        printf 'Warning: could not determine home directory for sudo user %s; skipping user loader.\n' \
+            "$SUDO_USER" >&2
+    fi
+fi
+
+printf '\nXGS Bash prompt installation complete.\n'
+printf 'Open a new terminal, run: exec bash\n'
+printf 'For the root prompt, run: sudo -i\n'
