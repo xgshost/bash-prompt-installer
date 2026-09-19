@@ -50,35 +50,17 @@ git clone [https://github.com/xgshost/bash-prompt-installer.git](https://github.
 cd bash-prompt-installer
 ```
 
-### Review the installer
-
-> **Warning:** Review scripts before running them with `sudo`. Administrator privileges allow a script to read, modify, or delete system files and configuration. Make sure you understand and trust what the script does before executing it.
-
-```bash
-less install-bash-prompt.sh
-```
-
-You can also inspect it with your preferred editor:
-
-```bash
-nano install-bash-prompt.sh
-```
-
-### Check the Bash syntax
-
-This checks the script for Bash syntax errors without executing it:
-
-```bash
-bash -n install-bash-prompt.sh
-```
-
-If this command produces no output, Bash found no syntax errors.
-
 ### Run the installer
 
 ```bash
 sudo bash install-bash-prompt.sh
 ```
+
+      > **Warning:** Review scripts before running them with `sudo`. Administrator privileges allow a script to read, modify, or delete system files and configuration. Make sure you understand and trust what the script does before executing it.
+
+      ```bash
+      nano install-bash-prompt.sh
+      ```
 
 ### Start a new Bash session
 
