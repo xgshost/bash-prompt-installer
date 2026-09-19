@@ -42,24 +42,23 @@ It installs a shared prompt definition, enables it for interactive Bash shells, 
 
 ## Install
 
-
 ### One-line install
 
-> **Warning:** This command downloads and runs the latest version of the script with administrator privileges. Only use it if you trust this repository and understand that you are executing remote code as root.
+> **Warning:** This command downloads and runs the latest version of the script with administrator privileges. Only use it if you trust this repository and understand that you are executing remote code as root. For the safer option, use the manual install method below.
 
 ```bash
 curl -fsSL [https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh](https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh) | sudo bash
 ```
 
-### Manual Install
+### Manual install
 
-### 1. Download the script
+#### 1. Download the script
 
 ```bash
 curl -fsSLO [https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh](https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh)
 ```
 
-### 2. Review it before running it
+#### 2. Review it before running it
 
 ```bash
 less install-bash-prompt.sh
@@ -71,13 +70,23 @@ You can also inspect it with your preferred editor:
 nano install-bash-prompt.sh
 ```
 
-### 3. Run the installer
+#### 3. Check the Bash syntax
+
+This checks the script for Bash syntax errors without executing it:
+
+```bash
+bash -n install-bash-prompt.sh
+```
+
+If this command produces no output, Bash found no syntax errors.
+
+#### 4. Run the installer
 
 ```bash
 sudo bash install-bash-prompt.sh
 ```
 
-### 4. Start a new Bash session
+#### 5. Start a new Bash session
 
 ```bash
 exec bash
@@ -118,6 +127,7 @@ For extra assurance, clone the repository and inspect the exact files before run
 git clone [https://github.com/xgshost/bash-prompt-installer.git](https://github.com/xgshost/bash-prompt-installer.git)
 cd bash-prompt-installer
 less install-bash-prompt.sh
+bash -n install-bash-prompt.sh
 sudo bash install-bash-prompt.sh
 ```
 
