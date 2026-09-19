@@ -1,17 +1,19 @@
 # Bash Prompt Installer
 
-An idempotent installer for a colorful two-line Bash prompt on Ubuntu and Debian systems.
+A safe, repeatable installer for a colorful two-line Bash prompt on Ubuntu and Debian systems.
 
-## Prompt preview
+It installs a shared prompt definition, enables it for interactive Bash shells, backs up files before they are changed, and can be run again without endlessly adding duplicate configuration blocks.
 
-Normal user:
+## Preview
+
+### Standard user
 
 ```text
 ╭─⛨ ❮server-01❯›❮admin❯
 ╰─➤ [.../project/current-directory] : $
 ```
 
-Root:
+### Root user
 
 ```text
 ╭─⛨ ❮server-01❯»❮root❯
@@ -20,41 +22,63 @@ Root:
 
 ## Features
 
-- System-wide prompt definition in `/etc/profile.d/xgs-prompt.sh`
-- Ubuntu/Debian Bash loader in `/etc/bash.bashrc`
-- Final user-level loader in `/root/.bashrc`
-- Final user-level loader for the account that runs the installer with `sudo`
-- Lime-green normal-user identity and red root identity
-- Bright-cyan hostname and darker-cyan path
-- Last four directory components in the prompt path
-- Timestamped backups before files are changed
-- Idempotent: safe to run repeatedly without duplicate loader blocks
+- Clear visual distinction between standard-user and root shells
+- Displays hostname, current user, working path, and prompt symbol
+- Uses a two-line layout to keep commands readable
+- Shows the last four path components for long working directories
+- Installs a shared prompt definition for interactive shells
+- Creates timestamped backups before modifying configuration files
+- Idempotent behavior: rerunning the installer does not duplicate its managed loader blocks
+- Designed for Ubuntu and Debian systems using Bash
+
+## Requirements
+
+- Ubuntu or Debian
+- Bash
+- `sudo` or root access
+- A UTF-8 terminal font that supports the prompt glyphs
 
 ## Install
 
-Download the script, inspect it, then run it:
+### 1. Download the script
 
 ```bash
 curl -fsSLO [https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh](https://raw.githubusercontent.com/xgshost/bash-prompt-installer/main/install-bash-prompt.sh)
+```
+
+### 2. Review it before running it
+
+```bash
 less install-bash-prompt.sh
+```
+
+You can also inspect it with your preferred editor:
+
+```bash
+nano install-bash-prompt.sh
+```
+
+### 3. Run the installer
+
+```bash
 sudo bash install-bash-prompt.sh
 ```
 
-Start a fresh Bash session after installation:
+### 4. Start a new Bash session
 
 ```bash
 exec bash
 ```
 
-Test the root prompt:
+To check the root prompt, open a root login shell:
 
 ```bash
 sudo -i
 ```
 
-## Files changed
+## What the installer changes
 
-The installer may create or update:
+Depending on the system and the account used to run it, the installer may create or update these files:
 
 ```text
 /etc/profile.d/xgs-prompt.sh
@@ -63,23 +87,49 @@ The installer may create or update:
 /home/YOUR-USER/.bashrc
 ```
 
-Backups are stored beneath:
+Before changing an existing file, the installer creates timestamped backups under:
 
 ```text
 /root/bash-prompt-backups/
 ```
 
-## Requirements
+## Security warning
 
-- Ubuntu or Debian
-- Bash
-- `sudo` access
-- UTF-8 terminal font with support for the prompt glyphs
+> **Review scripts before running them with `sudo`.** Administrator privileges allow a script to read, modify, or delete system files and configuration. Download the script from this repository, inspect its contents, and make sure you understand and trust what it does before executing it.
 
-## Security note
+Do not run a command copied from an issue, fork, chat message, or third-party website as root unless you have reviewed it and verified the source.
 
-Review downloaded scripts before running them with `sudo`. Do not run code from a repository you do not trust.
+For extra assurance, clone the repository and inspect the exact files before running the installer:
+
+```bash
+git clone [https://github.com/xgshost/bash-prompt-installer.git](https://github.com/xgshost/bash-prompt-installer.git)
+cd bash-prompt-installer
+less install-bash-prompt.sh
+sudo bash install-bash-prompt.sh
+```
+
+## Uninstall
+
+The installer preserves backups, so the safest removal method is to restore the relevant configuration files from `/root/bash-prompt-backups/` and remove the prompt definition file:
+
+```bash
+sudo rm -f /etc/profile.d/xgs-prompt.sh
+```
+
+Then remove the installer-managed loader blocks from the affected Bash configuration files, or restore the timestamped backups created before installation.
+
+Open a new shell after making changes:
+
+```bash
+exec bash
+```
+
+## Contributing
+
+Issues and pull requests are welcome.
+
+Please do not add credentials, API tokens, private hostnames, IP addresses, personal information, or other sensitive environment-specific details to issues, commits, or pull requests.
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
