@@ -6,6 +6,8 @@ It installs a shared prompt definition, enables it for interactive Bash shells, 
 
 ## Preview
 
+![Bash Prompt Installer preview showing normal-user and root prompts](images/prompt-preview.png)
+
 ### Standard user
 
 ```text
